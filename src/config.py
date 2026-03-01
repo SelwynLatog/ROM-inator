@@ -8,7 +8,7 @@ CAMERA_BUFFER_SIZE = 1
 
 # Frame
 FRAME_WIDTH = 720
-FRAME_HEIGHT = 620
+FRAME_HEIGHT = 720
 
 
 # Model
@@ -27,6 +27,13 @@ TARGET_FPS = 30
 LANDMARK_DOT_RADIUS = 5
 LANDMARK_LINE_THICKNESS = 2
 
+#Audio
+AUDIO_ENABLED= True
+MUSIC_PATH   = "assets/audio/music/Synthwave.mp3"
+MUSIC_VOLUME = 0.5    # 0.0 to 1.0
+
+HALF_REP_AUDIO_DIR = "assets/audio/reactions/"
+REACTION_VOLUME    = 1.0
 
 # Skeleton Connections
 # Each tuple is (landmark_index_start, landmark_index_end)
@@ -49,7 +56,7 @@ ANGLE_SMOOTHING_FRAMES=5
 # Movement Configs
 
 #Squat
-SQUAT_BOTTOM_THRESHOLD=110 # knee below this = valid bottom
+SQUAT_BOTTOM_THRESHOLD=100 # knee below this = valid bottom
 SQUAT_TOP_THRESHOLD=160 # knee above this = valid top
 
 # Push up
@@ -61,13 +68,13 @@ PULLUP_BOTTOM_THRESHOLD = 155   # elbow above this = valid bottom (hanging)
 PULLUP_TOP_THRESHOLD = 90       # elbow below this = valid top (chin up)
 
 # Partial reps
-SQUAT_COMMIT_THRESHOLD = 155
+SQUAT_COMMIT_THRESHOLD = 140
 PUSHUP_COMMIT_THRESHOLD = 130
 PULLUP_COMMIT_THRESHOLD = 140
 
-# Audio
-MUSIC_PATH   = "assets/audio/music/Synthwave.mp3"
-MUSIC_VOLUME = 0.5    # 0.0 to 1.0
+# Movement Integrity
+SQUAT_TORSO_LEAN_FORWARD_MAX  = 150     # max torso lean
+SQUAT_TORSO_LEAN_BACKWARD_MAX = 179
 
-HALF_REP_AUDIO_DIR = "assets/audio/reactions/"
-REACTION_VOLUME    = 1.0
+SQUAT_MIN_ECCENTRIC_DURATION = 0.35     # ecc w delay
+SQUAT_MIN_CONCENTRIC_DURATION = 0.0     # conc 

@@ -1,0 +1,53 @@
+# src/integrity_engine.py
+# Judges rep quality based on tempo, torso lean, and depth.
+# Returns a quality report when a rep completes, None otherwise.
+
+from src.config import (
+    SQUAT_MIN_ECCENTRIC_DURATION,
+    SQUAT_MIN_CONCENTRIC_DURATION,
+    SQUAT_TORSO_LEAN_FORWARD_MAX,
+)
+
+
+class IntegrityEngine:
+
+    def __init__(self):
+        self.prev_phase = None
+        self.worst_lean = 999
+
+    def update(self, rep_data, angles):
+        current_phase = rep_data["phase"]
+        torso_angle   = angles.get("torso", 0)
+
+        if current_phase in ("AT_TOP", "AT_BOTTOM"):
+            self.worst_lean = min(self.worst_lean, torso_angle)
+
+        rep_just_completed = (
+            self.prev_phase == "AT_BOTTOM" and
+            current_phase   == "AT_TOP"
+        )
+
+        self.prev_phase = current_phase
+
+        if rep_just_completed:
+            captured_lean   = self.worst_lean
+            self.worst_lean = 999
+            return self._judge_rep(rep_data, captured_lean)
+
+        return None
+
+    def _judge_rep(self, rep_data, worst_lean):
+        eccentric_ok  = rep_data["last_eccentric_duration"]  >= SQUAT_MIN_ECCENTRIC_DURATION
+        concentric_ok = rep_data["last_concentric_duration"] >= SQUAT_MIN_CONCENTRIC_DURATION
+        tempo_ok      = eccentric_ok and concentric_ok
+        torso_ok      = worst_lean >= SQUAT_TORSO_LEAN_FORWARD_MAX
+        depth_score   = rep_data["depth_score"]
+        overall_ok    = tempo_ok and torso_ok
+
+        return {
+            "tempo_ok":    tempo_ok,
+            "torso_ok":    torso_ok,
+            "depth_score": depth_score,
+            "overall_ok":  overall_ok,
+            "worst_lean":  round(worst_lean, 1)
+        }
