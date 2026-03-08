@@ -88,7 +88,7 @@ def get_joint_angles(landmarks):
         landmarks[24]   # hip R
     )
 
-    # Torso lean — angle between vertical and the shoulder-to-hip line
+    # Vertical Torso lean — angle between vertical -> shoulder-to-hip line
     mid_shoulder = Point(
         x=(landmarks[11].x + landmarks[12].x) / 2,
         y=(landmarks[11].y + landmarks[12].y) / 2
@@ -107,12 +107,19 @@ def get_joint_angles(landmarks):
 
     angles["torso"] = calculate_angle(vertical_ref, mid_shoulder, mid_hip)
 
+    # Horizontal Torso Lean - shoulder -> hip -> ankle alignment
+    # Used for horizontal movements - push ups
+    mid_ankle = Point(
+        x=(landmarks[27].x + landmarks[28].x)/2,
+        y=(landmarks[27].y + landmarks[28].y)/2
+    )
+    angles["body_alignment"]= calculate_angle(mid_shoulder, mid_hip,
+    mid_ankle)
+
     return angles
 
 class AngleSmoother:
-    # Keeps a rolling history of the last N frames per joint.
-    # Returns averaged angles to reduce landmark jitter.
-
+    # Returns averaged angles to reduce landmark jitter
     def __init__(self, window_size):
         self.window_size = window_size
         self.history = defaultdict(list)

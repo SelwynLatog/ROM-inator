@@ -9,7 +9,6 @@ from src.config import FRAME_WIDTH, FRAME_HEIGHT
 
 HALF_REP_DISPLAY_DURATION = 1.0
 
-
 FONT         = cv2.FONT_HERSHEY_SIMPLEX
 COLOR_GREEN  = (0, 255, 0)
 COLOR_RED    = (0, 0, 255)
@@ -19,7 +18,8 @@ COLOR_YELLOW = (0, 255, 255)
 
 class DisplayOverlay:
 
-    def __init__(self):
+    def __init__(self, exercise):
+        self.exercise            = exercise
         self.last_half_rep_time  = 0
         self.last_report_time    = 0
         self.last_report_message = ""
@@ -33,13 +33,13 @@ class DisplayOverlay:
 
     def set_rep_report(self, report):
         if not report["tempo_ok"]:
-            self.last_report_message = "ARE YOU RIDING A DILDO? CONTROL THE TEMPO!"
+            self.last_report_message = self.exercise.msg_tempo_bad
             self.last_report_color   = COLOR_RED
         elif not report["torso_ok"]:
-            self.last_report_message = "ARE YOU A DUCK?"
+            self.last_report_message = self.exercise.msg_torso_bad
             self.last_report_color   = COLOR_RED
         elif report["overall_ok"]:
-            self.last_report_message = "GOOD. SPREAD THEM GLUTES!"
+            self.last_report_message = self.exercise.msg_ok
             self.last_report_color   = COLOR_GREEN
 
         self.last_report_time = time.time()
@@ -51,7 +51,7 @@ class DisplayOverlay:
         frame = self._draw_fps(frame, fps)
         frame = self._draw_reps(frame, rep_data["reps"])
         frame = self._draw_phase(frame, rep_data["phase"])
-        frame = self._draw_knee_angle(frame, angles)
+        frame = self._draw_joint_angle(frame, angles)
 
         if self._half_rep_active():
             frame = self._draw_half_rep_warning(frame)
@@ -76,10 +76,11 @@ class DisplayOverlay:
                     (10, 110), FONT, 0.5, COLOR_YELLOW, 2)
         return frame
 
-    def _draw_knee_angle(self, frame, angles):
-        knee_angle = angles.get("knee_left", 0)
-        cv2.putText(frame, f"KNEE: {int(knee_angle)}",
-                    (10, 150), FONT, 0.7, COLOR_WHITE, 2)
+    def _draw_joint_angle(self, frame, angles):
+        angle = angles.get(self.exercise.angle_key, 0)
+        label = self.exercise.angle_key.upper()
+        cv2.putText(frame, f"{label}: {int(angle)}",
+                    (10, 150), FONT, 0.5, COLOR_WHITE, 2)
         return frame
 
     def _draw_half_rep_warning(self, frame):
@@ -89,7 +90,7 @@ class DisplayOverlay:
         text_y    = FRAME_HEIGHT // 2
         cv2.putText(frame, text,
                     (text_x, text_y), FONT, 1.5, COLOR_RED, 3)
-        return frame                                           # ← was missing
+        return frame
 
     def _draw_report_message(self, frame):
         text      = self.last_report_message

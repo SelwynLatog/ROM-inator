@@ -1,26 +1,22 @@
 # src/integrity_engine.py
 # Judges rep quality based on tempo, torso lean, and depth.
-# Returns a quality report when a rep completes, None otherwise.
-
-from src.config import (
-    SQUAT_MIN_ECCENTRIC_DURATION,
-    SQUAT_MIN_CONCENTRIC_DURATION,
-    SQUAT_TORSO_LEAN_FORWARD_MAX,
-)
-
+# Returns a quality report when a rep completes.
+# Reads all thresholds from the exercise object.
+# TODO: Sway & kipping, & chin over the bar factors.
 
 class IntegrityEngine:
 
-    def __init__(self):
+    def __init__(self, exercise):
+        self.exercise   = exercise
         self.prev_phase = None
         self.worst_lean = 999
 
     def update(self, rep_data, angles):
-        current_phase = rep_data["phase"]
-        torso_angle   = angles.get("torso", 0)
+        current_phase  = rep_data["phase"]
+        integrity_angle = angles.get(self.exercise.integrity_angle, 0)
 
         if current_phase in ("AT_TOP", "AT_BOTTOM"):
-            self.worst_lean = min(self.worst_lean, torso_angle)
+            self.worst_lean = min(self.worst_lean, integrity_angle)
 
         rep_just_completed = (
             self.prev_phase == "AT_BOTTOM" and
@@ -37,10 +33,10 @@ class IntegrityEngine:
         return None
 
     def _judge_rep(self, rep_data, worst_lean):
-        eccentric_ok  = rep_data["last_eccentric_duration"]  >= SQUAT_MIN_ECCENTRIC_DURATION
-        concentric_ok = rep_data["last_concentric_duration"] >= SQUAT_MIN_CONCENTRIC_DURATION
+        eccentric_ok  = rep_data["last_eccentric_duration"]  >= self.exercise.min_eccentric
+        concentric_ok = rep_data["last_concentric_duration"] >= self.exercise.min_concentric
         tempo_ok      = eccentric_ok and concentric_ok
-        torso_ok      = worst_lean >= SQUAT_TORSO_LEAN_FORWARD_MAX
+        torso_ok      = worst_lean >= self.exercise.torso_lean_max
         depth_score   = rep_data["depth_score"]
         overall_ok    = tempo_ok and torso_ok
 
