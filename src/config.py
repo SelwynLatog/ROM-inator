@@ -6,9 +6,11 @@ CAMERA_INDEX = 0
 CAMERA_BUFFER_SIZE = 1
 
 
-# Frame
-FRAME_WIDTH = 720
-FRAME_HEIGHT = 480
+# Frame 1080 1920
+FRAME_WIDTH = 1080
+FRAME_HEIGHT = 1920
+
+DISPLAY_SCALE= 0.4
 
 
 # Model
@@ -35,6 +37,9 @@ MUSIC_VOLUME = 0.5    # 0.0 to 1.0
 HALF_REP_AUDIO_DIR = "assets/audio/reactions/"
 REACTION_VOLUME    = 1.0
 
+#Video test
+VIDEO_ENABLED= True
+VIDEO_FILE_PATH = "assets/video/pullup_sway.mp4"
 # Skeleton Connections
 # Each tuple is (landmark_index_start, landmark_index_end)
 # Index numbers are from MediaPipe's fixed landmark map
@@ -51,42 +56,44 @@ SKELETON_CONNECTIONS = [
     (24, 26), (26, 28),
 ]
 
-ANGLE_SMOOTHING_FRAMES=5
+ANGLE_SMOOTHING_FRAMES=8
 
 # Movement Configs
 
 #Squat
-SQUAT_BOTTOM_THRESHOLD=100 # knee below this = valid bottom
-SQUAT_TOP_THRESHOLD=160 # knee above this = valid top
+SQUAT_BOTTOM_THRESHOLD=70 # knee below this = valid bottom
+SQUAT_TOP_THRESHOLD= 150 # knee above this = valid top
 
 # Push up
-PUSHUP_BOTTOM_THRESHOLD = 90    # elbow below this = valid bottom
+PUSHUP_BOTTOM_THRESHOLD = 80    # elbow below this = valid bottom
 PUSHUP_TOP_THRESHOLD = 155      # elbow above this = valid top
 
 # Pull up
-PULLUP_BOTTOM_THRESHOLD = 155   # elbow above this = valid bottom (hanging)
-PULLUP_TOP_THRESHOLD = 90       # elbow below this = valid top (chin up)
+PULLUP_BOTTOM_THRESHOLD = 145   # elbow above this = valid bottom (hanging)
+PULLUP_TOP_THRESHOLD = 75       # elbow below this = valid top (chin up)
+                                # more forgiving threshold as wide grip doesnt go to 90
+                        
 
 # Partial reps
 SQUAT_COMMIT_THRESHOLD = 140
-PUSHUP_COMMIT_THRESHOLD = 130
-PULLUP_COMMIT_THRESHOLD = 140
+PUSHUP_COMMIT_THRESHOLD = 115
+PULLUP_COMMIT_THRESHOLD = 100
 
 # Movement Integrity
-SQUAT_TORSO_LEAN_FORWARD_MAX  = 150     # max torso lean
+SQUAT_TORSO_LEAN_FORWARD_MAX  = 110     # max torso lean/ polish lean
 SQUAT_TORSO_LEAN_BACKWARD_MAX = 179
 
 # Minimum duration of execution in seconds
-SQUAT_MIN_ECCENTRIC_DURATION   = 0.35   # eccentric w delay
+SQUAT_MIN_ECCENTRIC_DURATION   = 0.1   # eccentric w delay
 SQUAT_MIN_CONCENTRIC_DURATION  = 0.0    # concentric
 
 PUSHUP_MIN_ECCENTRIC_DURATION  = 0.1
 PUSHUP_MIN_CONCENTRIC_DURATION = 0.0
-PUSHUP_TORSO_LEAN_MAX          = 160    # back should stay straight
+PUSHUP_TORSO_LEAN_MAX          = 155    # back should stay straight
  
 PULLUP_MIN_ECCENTRIC_DURATION  = 0.1
 PULLUP_MIN_CONCENTRIC_DURATION = 0.0
-PULLUP_TORSO_LEAN_MAX          = 170    # body should stay vertical
+PULLUP_TORSO_LEAN_MAX          = 155    # body should stay vertical
 
 # Rep validation messages
 SQUAT_TEMPO_BAD = "ARE YOU RIDING A DILDO? CONTROL THE TEMPO!"

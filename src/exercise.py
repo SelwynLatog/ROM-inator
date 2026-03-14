@@ -25,7 +25,8 @@ class Exercise:
     def __init__(self, name, angle_key, integrity_angle, top_threshold,
                  bottom_threshold, commit_threshold, direction,
                  min_eccentric, min_concentric, torso_lean_max,
-                 msg_tempo_bad, msg_torso_bad, msg_ok):
+                 msg_tempo_bad, msg_torso_bad, msg_ok,
+                 requires_bar_calibration):
         self.name             = name
         self.angle_key        = angle_key
         self.integrity_angle  = integrity_angle
@@ -39,6 +40,7 @@ class Exercise:
         self.msg_tempo_bad    = msg_tempo_bad
         self.msg_torso_bad    = msg_torso_bad
         self.msg_ok           = msg_ok
+        self.requires_bar_calibration = requires_bar_calibration
 
 
 SQUAT = Exercise(
@@ -55,6 +57,7 @@ SQUAT = Exercise(
     msg_tempo_bad    = SQUAT_TEMPO_BAD,
     msg_torso_bad    = SQUAT_TORSO_BAD,
     msg_ok           = SQUAT_OK
+    requires_bar_calibration= False
 )
 
 PUSH_UP = Exercise(
@@ -71,6 +74,7 @@ PUSH_UP = Exercise(
     msg_tempo_bad    = PUSHUP_TEMPO_BAD,
     msg_torso_bad    = PUSHUP_TORSO_BAD,
     msg_ok           = PUSHUP_OK
+    requires_bar_calibration= False
 )
 
 PULL_UP = Exercise(
@@ -87,6 +91,7 @@ PULL_UP = Exercise(
     msg_tempo_bad    = PULLUP_TEMPO_BAD,
     msg_torso_bad    = PULLUP_TORSO_BAD,
     msg_ok           = PULLUP_OK
+    requires_bar_calibration= True
 )
 
 

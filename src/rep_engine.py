@@ -10,8 +10,10 @@ PHASE_AT_TOP    = "AT_TOP"
 PHASE_AT_BOTTOM = "AT_BOTTOM"
 
 # Movement directions
-DIRECTION_DESCEND = "descend"   # bottom = low angle  (squats, push ups)
-DIRECTION_ASCEND  = "ascend"    # bottom = high angle (pull ups)
+DIRECTION_DESCEND = "descend"
+DIRECTION_ASCEND  = "ascend"
+
+COMMIT_COOLDOWN = 8    # frames after commit before half rep can trigger
 
 
 class RepEngine:
@@ -22,15 +24,16 @@ class RepEngine:
         self.commit_threshold = commit_threshold
         self.direction        = direction
 
-        self.phase     = PHASE_WAITING
-        self.reps      = 0
-        self.committed = False
+        self.phase            = PHASE_WAITING
+        self.reps             = 0
+        self.committed        = False
 
         self.rep_start_time           = 0
         self.bottom_time              = 0
         self.last_eccentric_duration  = 0
         self.last_concentric_duration = 0
         self.min_angle_this_rep       = 999
+        self.commit_frame_count       = 0
 
     def _at_top(self, angle):
         if self.direction == DIRECTION_DESCEND:
@@ -59,16 +62,16 @@ class RepEngine:
                 self.committed = False
 
         elif self.phase == PHASE_AT_TOP:
-            # Start the clock the moment descent begins
             if not self.committed and angle < self.top_threshold:
                 self.rep_start_time = time.time()
 
-            # Commit flag triggers at commit threshold for half rep detection
             if self._past_commit(angle) and not self.committed:
                 self.committed          = True
                 self.min_angle_this_rep = 999
+                self.commit_frame_count = 0
 
             if self.committed:
+                self.commit_frame_count += 1
                 if self.direction == DIRECTION_DESCEND:
                     self.min_angle_this_rep = min(self.min_angle_this_rep, angle)
                 else:
@@ -80,10 +83,11 @@ class RepEngine:
                 self.bottom_time = time.time()
                 self.last_eccentric_duration = self.bottom_time - self.rep_start_time
 
-            elif self._at_top(angle) and self.committed:
-                half_rep            = True
-                self.committed      = False
-                self.rep_start_time = 0
+            elif self._at_top(angle) and self.committed and self.commit_frame_count > COMMIT_COOLDOWN:
+                half_rep                = True
+                self.committed          = False
+                self.rep_start_time     = 0
+                self.commit_frame_count = 0
 
         elif self.phase == PHASE_AT_BOTTOM:
             if self._at_top(angle):

@@ -1,4 +1,5 @@
 # main.py
+# TODO : PULL UP TUNING, BAR DETECTION AS SECOND VALIDATION
 import cv2
 import time
 import mediapipe as mp
@@ -14,7 +15,10 @@ from src.exercise import select_exercise
 from src.config import (
     ANGLE_SMOOTHING_FRAMES,
     HALF_REP_AUDIO_DIR,
-    AUDIO_ENABLED
+    AUDIO_ENABLED,
+    FRAME_WIDTH,
+    FRAME_HEIGHT,
+    DISPLAY_SCALE
 )
 
 WINDOW_NAME = "ROM-inator"
@@ -48,7 +52,7 @@ def main():
     while True:
         frame = read_frame(cap)
         if frame is None:
-            continue
+            break
 
         rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         mp_image  = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb_frame)
@@ -62,20 +66,23 @@ def main():
         if detection_result.pose_landmarks:
             angles   = get_joint_angles(detection_result.pose_landmarks[0])
             angles   = smoother.smooth(angles)
-            print(f"body_alignment: {angles.get('body_alignment', 0):.1f}")
             rep_data = rep_engine.update(angles[exercise.angle_key])
             report   = integrity_engine.update(rep_data, angles)
-
+            #print(f"elbow: {angles.get('elbow_left', 0):.1f} | sway: {angles.get('body_alignment', 0):.1f} | half: {rep_data['half_rep']}")
+            print(f"phase: {rep_data['phase']} | elbow: {angles.get('elbow_left', 0):.1f} | half: {rep_data['half_rep']} | reps: {rep_data['reps']}")
             if rep_data["half_rep"] and AUDIO_ENABLED:
                 play_random_clip(HALF_REP_AUDIO_DIR)
 
             if report:
-                print(f"torso: {report['worst_lean']} | torso_ok: {report['torso_ok']}")
                 overlay.set_rep_report(report)
 
             frame = overlay.draw(frame, fps, rep_data, angles)
 
-        cv2.imshow(WINDOW_NAME, frame)
+        display_frame = cv2.resize(frame, (
+            int(FRAME_WIDTH * DISPLAY_SCALE),
+            int(FRAME_HEIGHT * DISPLAY_SCALE)
+        ))
+        cv2.imshow(WINDOW_NAME, display_frame)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
