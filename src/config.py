@@ -38,8 +38,8 @@ HALF_REP_AUDIO_DIR = "assets/audio/reactions/"
 REACTION_VOLUME    = 1.0
 
 #Video test
-VIDEO_ENABLED= True
-VIDEO_FILE_PATH = "assets/video/pullup_sway.mp4"
+VIDEO_ENABLED   = True
+VIDEO_FILE_PATH = "assets/video/pullup_good.mp4"
 # Skeleton Connections
 # Each tuple is (landmark_index_start, landmark_index_end)
 # Index numbers are from MediaPipe's fixed landmark map
@@ -94,6 +94,12 @@ PUSHUP_TORSO_LEAN_MAX          = 155    # back should stay straight
 PULLUP_MIN_ECCENTRIC_DURATION  = 0.1
 PULLUP_MIN_CONCENTRIC_DURATION = 0.0
 PULLUP_TORSO_LEAN_MAX          = 155    # body should stay vertical
+
+# Position Gating
+SQUAT_GATE_THRESHOLD    = 155
+PUSHUP_GATE_THRESHOLD   = 155
+PULLUP_GATE_THRESHOLD   = 130
+
 
 # Rep validation messages
 SQUAT_TEMPO_BAD = "ARE YOU RIDING A DILDO? CONTROL THE TEMPO!"

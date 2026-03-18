@@ -13,7 +13,7 @@ PHASE_AT_BOTTOM = "AT_BOTTOM"
 DIRECTION_DESCEND = "descend"
 DIRECTION_ASCEND  = "ascend"
 
-COMMIT_COOLDOWN = 8    # frames after commit before half rep can trigger
+COMMIT_COOLDOWN = 15
 
 
 class RepEngine:
@@ -24,7 +24,12 @@ class RepEngine:
         self.commit_threshold = commit_threshold
         self.direction        = direction
 
-        self.phase            = PHASE_WAITING
+        # Ascending exercises (pull ups) start from dead hang= ready to count immediately
+        if direction == DIRECTION_ASCEND:
+            self.phase = PHASE_AT_BOTTOM
+        else:
+            self.phase = PHASE_WAITING
+
         self.reps             = 0
         self.committed        = False
 
@@ -84,10 +89,15 @@ class RepEngine:
                 self.last_eccentric_duration = self.bottom_time - self.rep_start_time
 
             elif self._at_top(angle) and self.committed and self.commit_frame_count > COMMIT_COOLDOWN:
-                half_rep                = True
-                self.committed          = False
-                self.rep_start_time     = 0
-                self.commit_frame_count = 0
+                if self.direction == DIRECTION_DESCEND:
+                    shallow = self.min_angle_this_rep > (self.commit_threshold * 0.85)
+                else:
+                    shallow = self.min_angle_this_rep < (self.commit_threshold * 1.15)
+                if shallow:
+                    half_rep                = True
+                    self.committed          = False
+                    self.rep_start_time     = 0
+                    self.commit_frame_count = 0
 
         elif self.phase == PHASE_AT_BOTTOM:
             if self._at_top(angle):

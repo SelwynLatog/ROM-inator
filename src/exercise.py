@@ -17,6 +17,8 @@ from src.config import (
     PULLUP_MIN_ECCENTRIC_DURATION, PULLUP_MIN_CONCENTRIC_DURATION,
     PULLUP_TORSO_LEAN_MAX,
     PULLUP_TEMPO_BAD, PULLUP_TORSO_BAD, PULLUP_OK,
+    
+    SQUAT_GATE_THRESHOLD, PUSHUP_GATE_THRESHOLD, PULLUP_GATE_THRESHOLD
 )
 
 
@@ -26,7 +28,8 @@ class Exercise:
                  bottom_threshold, commit_threshold, direction,
                  min_eccentric, min_concentric, torso_lean_max,
                  msg_tempo_bad, msg_torso_bad, msg_ok,
-                 requires_bar_calibration):
+                 requires_bar_calibration, position_gate_angle,
+                 position_gate_threshold, requires_landmark_gate):
         self.name             = name
         self.angle_key        = angle_key
         self.integrity_angle  = integrity_angle
@@ -40,7 +43,10 @@ class Exercise:
         self.msg_tempo_bad    = msg_tempo_bad
         self.msg_torso_bad    = msg_torso_bad
         self.msg_ok           = msg_ok
-        self.requires_bar_calibration = requires_bar_calibration
+        self.requires_bar_calibration =  requires_bar_calibration
+        self.position_gate_angle      =  position_gate_angle
+        self.position_gate_threshold  =  position_gate_threshold
+        self.requires_landmark_gate   =  requires_landmark_gate 
 
 
 SQUAT = Exercise(
@@ -56,8 +62,11 @@ SQUAT = Exercise(
     torso_lean_max   = SQUAT_TORSO_LEAN_FORWARD_MAX,
     msg_tempo_bad    = SQUAT_TEMPO_BAD,
     msg_torso_bad    = SQUAT_TORSO_BAD,
-    msg_ok           = SQUAT_OK
-    requires_bar_calibration= False
+    msg_ok           = SQUAT_OK,
+    requires_bar_calibration = False,
+    requires_landmark_gate   = False,
+    position_gate_angle      = "knee_left",
+    position_gate_threshold  = SQUAT_GATE_THRESHOLD        
 )
 
 PUSH_UP = Exercise(
@@ -73,8 +82,11 @@ PUSH_UP = Exercise(
     torso_lean_max   = PUSHUP_TORSO_LEAN_MAX,
     msg_tempo_bad    = PUSHUP_TEMPO_BAD,
     msg_torso_bad    = PUSHUP_TORSO_BAD,
-    msg_ok           = PUSHUP_OK
-    requires_bar_calibration= False
+    msg_ok           = PUSHUP_OK,
+    requires_bar_calibration = False,
+    requires_landmark_gate   = False,
+    position_gate_angle      = "body_alignment",
+    position_gate_threshold  = PUSHUP_GATE_THRESHOLD
 )
 
 PULL_UP = Exercise(
@@ -90,8 +102,11 @@ PULL_UP = Exercise(
     torso_lean_max   = PULLUP_TORSO_LEAN_MAX,
     msg_tempo_bad    = PULLUP_TEMPO_BAD,
     msg_torso_bad    = PULLUP_TORSO_BAD,
-    msg_ok           = PULLUP_OK
-    requires_bar_calibration= True
+    msg_ok           = PULLUP_OK,
+    requires_bar_calibration = True,
+    requires_landmark_gate   = True,
+    position_gate_angle      = "elbow_left",
+    position_gate_threshold  = PULLUP_GATE_THRESHOLD     
 )
 
 
