@@ -1,5 +1,6 @@
 venv/
 assets/
 __pycache__/
+sessions/
 *.pyc
 *.task
