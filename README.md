@@ -4,7 +4,7 @@ ROM-inator is a computer vision–based workout engine that tracks reps, form, a
 it measures concentric & eccentric durations, form integrity, and fatigue per rep and set. 
 Think of it as a workout logger that actually understands effort… and yells at you when you perform shitty reps.
 
-Built by a fitness and exercise science nerd tired who happens to program, and is just tired of manual workout logging and shitty fitness apps.
+Built by a fitness and exercise science nerd who happens to program, and is just tired of manual workout logging and shitty fitness apps.
 
 What It Does
 
