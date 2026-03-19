@@ -46,46 +46,29 @@ src/pose_landmarker.task
 Run
 python main.py
 
-Tree
-ROM-inator/
-├── src/
-│   ├── config.py           ← all tunable constants
-│   ├── rep_engine.py       ← cycle-based state machine
-│   ├── integrity_engine.py ← form & tempo validation
-│   ├── position_gate.py    ← automatic set detection
-│   ├── session_logger.py   ← rep/set/fatigue data
-│   ├── landmark_engine.py  ← joint angle extraction
-│   ├── bar_detector.py     ← chin-over-bar validation
-│   ├── display.py          ← camera overlay
-│   ├── camera.py           ← frame capture
-│   ├── pose.py             ← MediaPipe interface
-│   ├── exercise.py         ← per-exercise configs
-│   ├── audio_engine.py     ← reaction audio
-│   └── music_player.py     ← background music
-├── assets/
-│   ├── audio/
-│   │   ├── music/          ← .gitkeep (add your own .mp3)
-│   │   └── reactions/      ← .gitkeep (add your own reaction audio (preferably someone screaming in your ear))
-│   └── video/              ← .gitkeep (optional test videos)
-├── sessions/               ← JSON session output
-└── main.py
-
-
 Sample Outputs:
 
 <img width="1558" height="1048" alt="image" src="https://github.com/user-attachments/assets/cf503a5f-a447-4b95-86f9-a4f5206d0f50" />
 
+
 <img width="614" height="718" alt="image" src="https://github.com/user-attachments/assets/5c7ad5ff-3b25-4660-8697-cda653d6927c" />
+
 
 <img width="1472" height="1022" alt="image" src="https://github.com/user-attachments/assets/ddaf06ba-56ba-4a50-9dc5-8ae228539a5f" />
 
+
 <img width="560" height="360" alt="image" src="https://github.com/user-attachments/assets/c061e894-f155-47e6-8bc2-093791a29218" />
+
+
 # sample of shitty crossfit butterfly pull ups purposely being flagged for swaying like a monkey
+
 <img width="1413" height="1027" alt="image" src="https://github.com/user-attachments/assets/6cb0c8be-d076-4739-8ffb-ffd5417afdc6" />
 
 <img width="576" height="448" alt="image" src="https://github.com/user-attachments/assets/dffea0f0-6ba1-416d-843a-46af5dee4bfe" />
 
 <img width="1679" height="926" alt="image" src="https://github.com/user-attachments/assets/e9f25884-8252-4c46-8786-508272da7ece" />
+
+
 <img width="597" height="459" alt="image" src="https://github.com/user-attachments/assets/f8c38034-e229-4d22-b90e-4634dda2fe83" />
 
 Roadmap (V2)
