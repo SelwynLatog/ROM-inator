@@ -1,23 +1,32 @@
-# camera.py
+# src/camera.py
 # Owns camera setup and raw frame retrieval.
 # No display logic, no FPS calculation. Just frames out.
 
 import cv2
-from src.config import CAMERA_INDEX, CAMERA_BUFFER_SIZE, FRAME_WIDTH, FRAME_HEIGHT, VIDEO_FILE_PATH, VIDEO_ENABLED
+from src.config import (
+    CAMERA_INDEX, CAMERA_BUFFER_SIZE,
+    FRAME_WIDTH, FRAME_HEIGHT,
+    FRAME_WIDTH_LANDSCAPE, FRAME_HEIGHT_LANDSCAPE,
+    VIDEO_ENABLED, VIDEO_FILE_PATH
+)
 
-def open_camera():
-    source= VIDEO_FILE_PATH if VIDEO_ENABLED else CAMERA_INDEX
-    cap = cv2.VideoCapture(source)
+
+def open_camera(exercise):
+    source = VIDEO_FILE_PATH if VIDEO_ENABLED else CAMERA_INDEX
+    cap    = cv2.VideoCapture(source)
     if not cap.isOpened():
-        print("Failed To Load Bruh.")
+        print("Camera/video not detected.")
         exit()
     cap.set(cv2.CAP_PROP_BUFFERSIZE, CAMERA_BUFFER_SIZE)
     return cap
 
 
-def read_frame(cap):
+def read_frame(cap, exercise):
     ret, frame = cap.read()
     if not ret:
         return None
-    frame = cv2.resize(frame, (FRAME_WIDTH, FRAME_HEIGHT))
+    if exercise.name == "Push-up":
+        frame = cv2.resize(frame, (FRAME_WIDTH_LANDSCAPE, FRAME_HEIGHT_LANDSCAPE))
+    else:
+        frame = cv2.resize(frame, (FRAME_WIDTH, FRAME_HEIGHT))
     return frame

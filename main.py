@@ -13,13 +13,13 @@ from src.integrity_engine import IntegrityEngine
 from src.exercise import select_exercise
 from src.bar_detector import BarDetector
 from src.position_gate import PositionGate
+from src.session_logger import Session, Rep
 from src.config import (
     ANGLE_SMOOTHING_FRAMES,
     HALF_REP_AUDIO_DIR,
     AUDIO_ENABLED,
-    FRAME_WIDTH,
-    FRAME_HEIGHT,
-    DISPLAY_SCALE
+    DISPLAY_SCALE,
+    MIN_REPS_FOR_NEW_SET
 )
 
 WINDOW_NAME = "ROM-inator"
@@ -31,11 +31,11 @@ def calculate_fps(prev_time):
     return fps, curr_time
 
 
-def run_bar_calibration(cap, landmarker, overlay):
+def run_bar_calibration(cap, landmarker, overlay, exercise):
     bar_detector = BarDetector()
 
     while not bar_detector.calibrated:
-        frame = read_frame(cap)
+        frame = read_frame(cap, exercise)
         if frame is None:
             continue
 
@@ -47,10 +47,8 @@ def run_bar_calibration(cap, landmarker, overlay):
         frame = draw_skeleton(frame, detection_result)
         frame = overlay.draw_calibration(frame)
 
-        display_frame = cv2.resize(frame, (
-            int(FRAME_WIDTH * DISPLAY_SCALE),
-            int(FRAME_HEIGHT * DISPLAY_SCALE)
-        ))
+        h, w          = frame.shape[:2]
+        display_frame = cv2.resize(frame, (int(w * DISPLAY_SCALE), int(h * DISPLAY_SCALE)))
         cv2.imshow(WINDOW_NAME, display_frame)
 
         key = cv2.waitKey(1) & 0xFF
@@ -63,9 +61,25 @@ def run_bar_calibration(cap, landmarker, overlay):
     return bar_detector
 
 
+def print_summary(session):
+    print("")
+    print("SESSION SUMMARY")
+    print(f"Exercise    {session.exercise_name}")
+    print(f"Total sets  {session.total_sets}")
+    print(f"Total reps  {session.total_reps}")
+    for s in session.sets:
+        print("")
+        print(f"  Set {s.set_number}   {s.total_reps} reps   {s.duration}s   avg {s.avg_rep_duration}s per rep")
+        for r in s.reps:
+            form = "W form" if r.overall_ok else "L form"
+            chin = f"   chin {r.chin_over_bar}" if r.chin_over_bar is not None else ""
+            print(f"    Rep {r.rep_number:2}   conc {r.concentric_duration}s   ecc {r.eccentric_duration}s   {form}{chin}")
+    print("")
+
+
 def main():
     exercise         = select_exercise()
-    cap              = open_camera()
+    cap              = open_camera(exercise)
     landmarker       = init_pose()
     smoother         = AngleSmoother(ANGLE_SMOOTHING_FRAMES)
     overlay          = DisplayOverlay(exercise)
@@ -77,10 +91,13 @@ def main():
         direction        = exercise.direction
     )
     position_gate = PositionGate(exercise)
+    session       = Session(exercise.name)
+    current_set   = None
     prev_ready    = False
     prev_time     = 0
     prev_reps     = 0
     valid_reps    = 0
+    last_chin_ok  = None
 
     if AUDIO_ENABLED:
         start_music_thread()
@@ -88,14 +105,14 @@ def main():
 
     bar_detector = None
     if exercise.requires_bar_calibration:
-        bar_detector = run_bar_calibration(cap, landmarker, overlay)
+        bar_detector = run_bar_calibration(cap, landmarker, overlay, exercise)
         if bar_detector is None:
             cap.release()
             cv2.destroyAllWindows()
             return
 
     while True:
-        frame = read_frame(cap)
+        frame = read_frame(cap, exercise)
         if frame is None:
             break
 
@@ -115,6 +132,22 @@ def main():
 
             ready = position_gate.update(angles, landmarks)
 
+            if ready and not prev_ready:
+                last_set_had_reps = (
+                    session.sets and
+                    session.sets[-1].total_reps >= MIN_REPS_FOR_NEW_SET
+                )
+                if current_set is None and (not session.sets or last_set_had_reps):
+                    current_set                   = session.start_set()
+                    rep_engine.bottom_time        = time.time()
+                    rep_engine.rep_start_time     = time.time()
+                    rep_engine.min_angle_this_rep = 999
+                frame = overlay.draw_ready(frame)
+
+            if not ready and prev_ready and current_set:
+                current_set.close()
+                current_set = None
+
             if ready:
                 rep_data = rep_engine.update(angles[exercise.angle_key])
                 report   = integrity_engine.update(rep_data, angles)
@@ -123,39 +156,54 @@ def main():
                     rep_just_completed = (rep_data["reps"] > prev_reps)
                     chin_ok = bar_detector.update(landmarks, rep_just_completed)
                     if rep_just_completed:
+                        last_chin_ok = chin_ok
                         if chin_ok:
                             valid_reps += 1
                         else:
-                            print(f"REP REJECTED — chin did not clear bar | valid: {valid_reps} | raw: {rep_data['reps']}")
+                            print(f"rep rejected   chin did not clear bar   valid {valid_reps}   raw {rep_data['reps']}")
                 else:
                     valid_reps = rep_data["reps"]
+
+                if report and current_set:
+                    rep = Rep(
+                        rep_number          = current_set.total_reps + 1,
+                        eccentric_duration  = rep_data["last_eccentric_duration"],
+                        concentric_duration = rep_data["last_concentric_duration"],
+                        depth_score         = rep_data["depth_score"],
+                        tempo_ok            = report["tempo_ok"],
+                        torso_ok            = report["torso_ok"],
+                        overall_ok          = report["overall_ok"],
+                        chin_over_bar       = last_chin_ok
+                    )
+                    current_set.add_rep(rep)
+                    last_chin_ok = None
+                    overlay.set_rep_report(report)
 
                 prev_reps = rep_data["reps"]
 
                 if rep_data["half_rep"] and AUDIO_ENABLED:
                     play_random_clip(HALF_REP_AUDIO_DIR)
 
-                if report:
-                    overlay.set_rep_report(report)
-
                 frame = overlay.draw(frame, fps, rep_data, angles, valid_reps)
 
             else:
                 frame = overlay.draw_position_prompt(frame)
 
-            if ready and not prev_ready:
-                frame = overlay.draw_ready(frame)
-
             prev_ready = ready
 
-        display_frame = cv2.resize(frame, (
-            int(FRAME_WIDTH * DISPLAY_SCALE),
-            int(FRAME_HEIGHT * DISPLAY_SCALE)
-        ))
+        h, w          = frame.shape[:2]
+        display_frame = cv2.resize(frame, (int(w * DISPLAY_SCALE), int(h * DISPLAY_SCALE)))
         cv2.imshow(WINDOW_NAME, display_frame)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
+
+    if current_set:
+        current_set.close()
+
+    session.end_session()
+    session.save()
+    print_summary(session)
 
     cap.release()
     cv2.destroyAllWindows()

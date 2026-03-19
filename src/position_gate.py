@@ -2,8 +2,9 @@
 # Detects starting position and gates rep counting.
 # Three states: WAITING -> ACTIVE -> RESTING
 
+from src.config import POSITION_REST_FRAMES
+
 READY_HOLD_FRAMES = 15      # frames to hold start position before counting begins
-REST_HOLD_FRAMES  = 90      # frames out of position after set before stopping (~3s at 30fps)
 JITTER_TOLERANCE  = 5       # bad frames allowed before hold_count resets
 
 
@@ -47,7 +48,7 @@ class PositionGate:
             self.rest_count += 1
             if self.rest_count > JITTER_TOLERANCE:
                 self.hold_count = 0
-            if self.set_active and self.rest_count >= REST_HOLD_FRAMES:
+            if self.set_active and self.rest_count >= POSITION_REST_FRAMES:
                 self.ready      = False
                 self.set_active = False
 

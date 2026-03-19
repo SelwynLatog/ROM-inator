@@ -1,48 +1,43 @@
 # config.py
 # All named constants for ROM-inator.
 
-#Camera
-CAMERA_INDEX = 0 
+# Camera
+CAMERA_INDEX       = 0
 CAMERA_BUFFER_SIZE = 1
 
-
-# Frame 1080 1920
-FRAME_WIDTH = 1080
-FRAME_HEIGHT = 1920
-
-DISPLAY_SCALE= 0.4
-
+# Frame
+FRAME_WIDTH            = 1080
+FRAME_HEIGHT           = 1920
+FRAME_WIDTH_LANDSCAPE  = 1920
+FRAME_HEIGHT_LANDSCAPE = 1080
+DISPLAY_SCALE          = 0.4
 
 # Model
 MODEL_PATH = "src/pose_landmarker.task"
 
-
-# Pose Detection 
-NUM_POSES = 1
-MIN_DETECT_CONF = 0.5
+# Pose Detection
+NUM_POSES         = 1
+MIN_DETECT_CONF   = 0.5
 MIN_PRESENCE_CONF = 0.5
 MIN_TRACKING_CONF = 0.5
 
-
-# Display 
-TARGET_FPS = 30
-LANDMARK_DOT_RADIUS = 5
+# Display
+TARGET_FPS              = 30
+LANDMARK_DOT_RADIUS     = 5
 LANDMARK_LINE_THICKNESS = 2
 
-#Audio
-AUDIO_ENABLED= False
-MUSIC_PATH   = "assets/audio/music/Synthwave.mp3"
-MUSIC_VOLUME = 0.5    # 0.0 to 1.0
-
+# Audio
+AUDIO_ENABLED      = False
+MUSIC_PATH         = "assets/audio/music/Synthwave.mp3"
+MUSIC_VOLUME       = 0.5
 HALF_REP_AUDIO_DIR = "assets/audio/reactions/"
 REACTION_VOLUME    = 1.0
 
-#Video test
+# Video test
 VIDEO_ENABLED   = True
-VIDEO_FILE_PATH = "assets/video/pullup_good.mp4"
+VIDEO_FILE_PATH = "assets/video/pushup_good2.mp4"
+
 # Skeleton Connections
-# Each tuple is (landmark_index_start, landmark_index_end)
-# Index numbers are from MediaPipe's fixed landmark map
 SKELETON_CONNECTIONS = [
     # Torso
     (11, 12), (11, 23), (12, 24), (23, 24),
@@ -56,60 +51,54 @@ SKELETON_CONNECTIONS = [
     (24, 26), (26, 28),
 ]
 
-ANGLE_SMOOTHING_FRAMES=8
+ANGLE_SMOOTHING_FRAMES = 8
 
 # Movement Configs
-
-#Squat
-SQUAT_BOTTOM_THRESHOLD=70 # knee below this = valid bottom
-SQUAT_TOP_THRESHOLD= 150 # knee above this = valid top
+# Squat
+SQUAT_BOTTOM_THRESHOLD = 70     # knee below this = valid bottom
+SQUAT_TOP_THRESHOLD    = 150    # knee above this = valid top
 
 # Push up
 PUSHUP_BOTTOM_THRESHOLD = 80    # elbow below this = valid bottom
-PUSHUP_TOP_THRESHOLD = 155      # elbow above this = valid top
+PUSHUP_TOP_THRESHOLD    = 155   # elbow above this = valid top
 
 # Pull up
 PULLUP_BOTTOM_THRESHOLD = 145   # elbow above this = valid bottom (hanging)
-PULLUP_TOP_THRESHOLD = 75       # elbow below this = valid top (chin up)
-                                # more forgiving threshold as wide grip doesnt go to 90
-                        
+PULLUP_TOP_THRESHOLD    = 75    # elbow below this = valid top (chin up)
 
 # Partial reps
-SQUAT_COMMIT_THRESHOLD = 140
+SQUAT_COMMIT_THRESHOLD  = 140
 PUSHUP_COMMIT_THRESHOLD = 115
 PULLUP_COMMIT_THRESHOLD = 100
 
 # Movement Integrity
-SQUAT_TORSO_LEAN_FORWARD_MAX  = 110     # max torso lean/ polish lean
+SQUAT_TORSO_LEAN_FORWARD_MAX  = 110
 SQUAT_TORSO_LEAN_BACKWARD_MAX = 179
 
 # Minimum duration of execution in seconds
-SQUAT_MIN_ECCENTRIC_DURATION   = 0.1   # eccentric w delay
-SQUAT_MIN_CONCENTRIC_DURATION  = 0.0    # concentric
-
+SQUAT_MIN_ECCENTRIC_DURATION   = 0.1
+SQUAT_MIN_CONCENTRIC_DURATION  = 0.0
 PUSHUP_MIN_ECCENTRIC_DURATION  = 0.1
 PUSHUP_MIN_CONCENTRIC_DURATION = 0.0
-PUSHUP_TORSO_LEAN_MAX          = 155    # back should stay straight
- 
+PUSHUP_TORSO_LEAN_MAX          = 155
 PULLUP_MIN_ECCENTRIC_DURATION  = 0.1
 PULLUP_MIN_CONCENTRIC_DURATION = 0.0
-PULLUP_TORSO_LEAN_MAX          = 155    # body should stay vertical
+PULLUP_TORSO_LEAN_MAX          = 155
 
 # Position Gating
-SQUAT_GATE_THRESHOLD    = 155
-PUSHUP_GATE_THRESHOLD   = 155
-PULLUP_GATE_THRESHOLD   = 130
-
+SQUAT_GATE_THRESHOLD   = 155
+PUSHUP_GATE_THRESHOLD  = 155
+PULLUP_GATE_THRESHOLD  = 130
+MIN_REPS_FOR_NEW_SET   = 3      # minimum reps before a rest creates a new set
+POSITION_REST_FRAMES   = 150    # frames out of position before set ends (~5s at 30fps)
 
 # Rep validation messages
-SQUAT_TEMPO_BAD = "ARE YOU RIDING A DILDO? CONTROL THE TEMPO!"
-SQUAT_TORSO_BAD = "ARE YOU A FUCKING DUCK? STRAIGHTEN YOUR TORSO!"
-SQUAT_OK        = "GOOD! SPREAD THEM GLUTES!"
-
+SQUAT_TEMPO_BAD  = "ARE YOU RIDING A DILDO? CONTROL THE TEMPO!"
+SQUAT_TORSO_BAD  = "ARE YOU A FUCKING DUCK? STRAIGHTEN YOUR TORSO!"
+SQUAT_OK         = "GOOD! SPREAD THEM GLUTES!"
 PUSHUP_TEMPO_BAD = "YOU'RE NOT THAT GUY PAL, CONTROL THE TEMPO!"
 PUSHUP_TORSO_BAD = "STOP HUMPING! STRAIGHTEN YOUR TORSO!"
 PUSHUP_OK        = "GOOD! CHEST TO FLOOR!"
-
 PULLUP_TEMPO_BAD = "CONTROL THE NEGATIVE!"
 PULLUP_TORSO_BAD = "STOP SWINGING YOU MONKEY!"
 PULLUP_OK        = "GOOD! CHEST OVER THE BAR!"

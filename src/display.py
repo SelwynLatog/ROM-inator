@@ -4,10 +4,8 @@
 import cv2
 import time
 
-from src.config import FRAME_WIDTH, FRAME_HEIGHT
 
-
-HALF_REP_DISPLAY_DURATION = 1.0
+HALF_REP_DISPLAY_DURATION = 3.0
 
 FONT         = cv2.FONT_HERSHEY_SIMPLEX
 COLOR_GREEN  = (0, 255, 0)
@@ -62,7 +60,6 @@ class DisplayOverlay:
         return frame
 
     def draw_calibration(self, frame):
-        # Called during bar calibration loop for pull ups
         frame = self._draw_calibration_prompt(frame)
         return frame
 
@@ -89,13 +86,14 @@ class DisplayOverlay:
         return frame
 
     def _draw_calibration_prompt(self, frame):
+        h, w      = frame.shape[:2]
         line1     = "HANG FROM BAR"
         line2     = "PRESS SPACE TO CALIBRATE"
         size1     = cv2.getTextSize(line1, FONT, 1.2, 2)[0]
         size2     = cv2.getTextSize(line2, FONT, 0.7, 2)[0]
-        x1        = (FRAME_WIDTH - size1[0]) // 2
-        x2        = (FRAME_WIDTH - size2[0]) // 2
-        center_y  = FRAME_HEIGHT // 2
+        x1        = (w - size1[0]) // 2
+        x2        = (w - size2[0]) // 2
+        center_y  = h // 2
         cv2.putText(frame, line1, (x1, center_y - 20),
                     FONT, 1.2, COLOR_WHITE, 2)
         cv2.putText(frame, line2, (x2, center_y + 20),
@@ -103,37 +101,41 @@ class DisplayOverlay:
         return frame
 
     def _draw_half_rep_warning(self, frame):
+        h, w      = frame.shape[:2]
         text      = "NOT A FULL REP"
         text_size = cv2.getTextSize(text, FONT, 1.5, 3)[0]
-        text_x    = (FRAME_WIDTH - text_size[0]) // 2
-        text_y    = FRAME_HEIGHT // 2
+        text_x    = (w - text_size[0]) // 2
+        text_y    = h // 2
         cv2.putText(frame, text,
                     (text_x, text_y), FONT, 1.5, COLOR_RED, 3)
         return frame
 
     def _draw_report_message(self, frame):
+        h, w      = frame.shape[:2]
         text      = self.last_report_message
         text_size = cv2.getTextSize(text, FONT, 1.2, 2)[0]
-        text_x    = (FRAME_WIDTH - text_size[0]) // 2
-        text_y    = FRAME_HEIGHT - 50
+        text_x    = (w - text_size[0]) // 2
+        text_y    = h - 50
         cv2.putText(frame, text,
                     (text_x, text_y), FONT, 1.2, self.last_report_color, 2)
         return frame
 
     def draw_position_prompt(self, frame):
-        text    = "GET INTO POSITION"
+        h, w      = frame.shape[:2]
+        text      = "GET INTO POSITION"
         text_size = cv2.getTextSize(text, FONT, 1.0, 2)[0]
-        text_x    = (FRAME_WIDTH - text_size[0]) // 2
-        text_y    = FRAME_HEIGHT // 2
+        text_x    = (w - text_size[0]) // 2
+        text_y    = h // 2
         cv2.putText(frame, text,
                     (text_x, text_y), FONT, 1.0, COLOR_YELLOW, 2)
         return frame
 
     def draw_ready(self, frame):
+        h, w      = frame.shape[:2]
         text      = "GO!"
         text_size = cv2.getTextSize(text, FONT, 2.0, 3)[0]
-        text_x    = (FRAME_WIDTH - text_size[0]) // 2
-        text_y    = FRAME_HEIGHT // 2
+        text_x    = (w - text_size[0]) // 2
+        text_y    = h // 2
         cv2.putText(frame, text,
                     (text_x, text_y), FONT, 2.0, COLOR_GREEN, 3)
         return frame

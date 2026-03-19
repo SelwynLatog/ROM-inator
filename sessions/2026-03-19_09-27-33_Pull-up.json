@@ -1,0 +1,117 @@
+{
+  "exercise": "Pull-up",
+  "date": "2026-03-19",
+  "start_time": "09:26:51",
+  "end_time": "09:27:33",
+  "total_sets": 1,
+  "total_reps": 9,
+  "sets": [
+    {
+      "set_number": 1,
+      "total_reps": 9,
+      "duration": 30.6,
+      "avg_rep_duration": 2.65,
+      "reps": [
+        {
+          "rep_number": 1,
+          "total_duration": 0.26,
+          "eccentric_duration": 0,
+          "concentric_duration": 0.26,
+          "depth_score": 999,
+          "tempo_ok": false,
+          "torso_ok": true,
+          "overall_ok": false,
+          "chin_over_bar": true
+        },
+        {
+          "rep_number": 2,
+          "total_duration": 2.23,
+          "eccentric_duration": 1.61,
+          "concentric_duration": 0.62,
+          "depth_score": 107.0,
+          "tempo_ok": true,
+          "torso_ok": true,
+          "overall_ok": true,
+          "chin_over_bar": true
+        },
+        {
+          "rep_number": 3,
+          "total_duration": 2.64,
+          "eccentric_duration": 1.7,
+          "concentric_duration": 0.94,
+          "depth_score": 15.6,
+          "tempo_ok": true,
+          "torso_ok": true,
+          "overall_ok": true,
+          "chin_over_bar": true
+        },
+        {
+          "rep_number": 4,
+          "total_duration": 2.51,
+          "eccentric_duration": 1.9,
+          "concentric_duration": 0.61,
+          "depth_score": 16.3,
+          "tempo_ok": true,
+          "torso_ok": true,
+          "overall_ok": true,
+          "chin_over_bar": true
+        },
+        {
+          "rep_number": 5,
+          "total_duration": 2.47,
+          "eccentric_duration": 1.7,
+          "concentric_duration": 0.77,
+          "depth_score": 19.5,
+          "tempo_ok": true,
+          "torso_ok": true,
+          "overall_ok": true,
+          "chin_over_bar": true
+        },
+        {
+          "rep_number": 6,
+          "total_duration": 3.93,
+          "eccentric_duration": 1.56,
+          "concentric_duration": 2.37,
+          "depth_score": 10.2,
+          "tempo_ok": true,
+          "torso_ok": true,
+          "overall_ok": true,
+          "chin_over_bar": true
+        },
+        {
+          "rep_number": 7,
+          "total_duration": 2.49,
+          "eccentric_duration": 1.6,
+          "concentric_duration": 0.89,
+          "depth_score": 11.2,
+          "tempo_ok": true,
+          "torso_ok": false,
+          "overall_ok": false,
+          "chin_over_bar": true
+        },
+        {
+          "rep_number": 8,
+          "total_duration": 3.67,
+          "eccentric_duration": 1.42,
+          "concentric_duration": 2.25,
+          "depth_score": 15.0,
+          "tempo_ok": true,
+          "torso_ok": true,
+          "overall_ok": true,
+          "chin_over_bar": true
+        },
+        {
+          "rep_number": 9,
+          "total_duration": 3.65,
+          "eccentric_duration": 1.38,
+          "concentric_duration": 2.27,
+          "depth_score": 108.3,
+          "tempo_ok": true,
+          "torso_ok": true,
+          "overall_ok": true,
+          "chin_over_bar": true
+        }
+      ]
+    }
+  ]
+}

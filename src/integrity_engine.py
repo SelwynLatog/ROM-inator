@@ -2,7 +2,6 @@
 # Judges rep quality based on tempo, torso lean, and depth.
 # Returns a quality report when a rep completes.
 # Reads all thresholds from the exercise object.
-# TODO: Sway & kipping, & chin over the bar factors.
 
 class IntegrityEngine:
 
@@ -12,16 +11,24 @@ class IntegrityEngine:
         self.worst_lean = 999
 
     def update(self, rep_data, angles):
-        current_phase  = rep_data["phase"]
+        current_phase   = rep_data["phase"]
         integrity_angle = angles.get(self.exercise.integrity_angle, 0)
 
         if current_phase in ("AT_TOP", "AT_BOTTOM"):
             self.worst_lean = min(self.worst_lean, integrity_angle)
 
-        rep_just_completed = (
-            self.prev_phase == "AT_BOTTOM" and
-            current_phase   == "AT_TOP"
-        )
+        # Descend — rep completes returning to top
+        # Ascend  — rep completes returning to bottom (full cycle)
+        if self.exercise.direction == "descend":
+            rep_just_completed = (
+                self.prev_phase == "AT_BOTTOM" and
+                current_phase   == "AT_TOP"
+            )
+        else:
+            rep_just_completed = (
+                self.prev_phase == "AT_TOP" and
+                current_phase   == "AT_BOTTOM"
+            )
 
         self.prev_phase = current_phase
 

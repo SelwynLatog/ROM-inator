@@ -1,0 +1,29 @@
+{
+  "exercise": "Pull-up",
+  "date": "2026-03-18",
+  "start_time": "20:52:30",
+  "end_time": "20:52:42",
+  "total_sets": 1,
+  "total_reps": 1,
+  "sets": [
+    {
+      "set_number": 1,
+      "total_reps": 1,
+      "duration": 2.68,
+      "avg_rep_duration": 0.24,
+      "reps": [
+        {
+          "rep_number": 1,
+          "total_duration": 0.24,
+          "eccentric_duration": 0,
+          "concentric_duration": 0.24,
+          "depth_score": 999,
+          "tempo_ok": false,
+          "torso_ok": true,
+          "overall_ok": false,
+          "chin_over_bar": true
+        }
+      ]
+    }
+  ]
+}
