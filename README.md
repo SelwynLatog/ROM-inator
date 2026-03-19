@@ -1,6 +1,6 @@
 ## ROM-inator
 
-# ROM-inator is a computer vision–based workout engine that tracks reps, form, and fatigue in real time. Not just rep counting — 
+# ROM-inator is a computer vision–based workout and biomechanics engine that tracks reps, form, and fatigue in real time. 
 
 it measures concentric & eccentric durations, form integrity, and fatigue per rep and set. 
 Think of it as a workout logger that actually understands effort… and yells at you when you perform shitty reps.
