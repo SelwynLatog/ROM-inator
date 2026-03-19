@@ -7,16 +7,22 @@ Think of it as a workout logger that actually understands effort… and yells at
 
 Built by a fitness and exercise science nerd who happens to program, and is just tired of manual workout logging and shitty fitness apps.
 
-What It Does
+# What It Does
 
 ROM-inator uses webcam or video input via MediaPipe pose detection to give you:
 
 Rep counting — full reps only, via a cycle-based state machine
+
 Concentric & eccentric timing — per rep, per set
+
 Form validation — torso lean, tempo, depth
+
 Fatigue profiling — detects slowdown and eccentric collapse
+
 Session logging — saved to JSON with per-rep and per-set breakdown
+
 Audio feedback — optional “angry trainer in your pocket”
+
 
 # Supported Movements
 
@@ -54,7 +60,7 @@ src/pose_landmarker.task
 # Run
 python main.py
 
-Sample Outputs:
+# Sample Outputs:
 
 <img width="1558" height="1048" alt="image" src="https://github.com/user-attachments/assets/cf503a5f-a447-4b95-86f9-a4f5206d0f50" />
 
