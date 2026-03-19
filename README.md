@@ -1,6 +1,7 @@
-##ROM-inator
+## ROM-inator
 
-#ROM-inator is a computer vision–based workout engine that tracks reps, form, and fatigue in real time. Not just rep counting — 
+# ROM-inator is a computer vision–based workout engine that tracks reps, form, and fatigue in real time. Not just rep counting — 
+
 it measures concentric & eccentric durations, form integrity, and fatigue per rep and set. 
 Think of it as a workout logger that actually understands effort… and yells at you when you perform shitty reps.
 
@@ -17,7 +18,7 @@ Fatigue profiling — detects slowdown and eccentric collapse
 Session logging — saved to JSON with per-rep and per-set breakdown
 Audio feedback — optional “angry trainer in your pocket”
 
-#Supported Movements
+# Supported Movements
 
 | Exercise | Camera Position          | Notes                    |
 | -------- | ------------------------ | ------------------------ |
@@ -25,25 +26,32 @@ Audio feedback — optional “angry trainer in your pocket”
 | Push-up  | Landscape, side-on floor | Elbow & body alignment   |
 | Pull-up  | Portrait, front-facing   | Bar calibration required |
 
-#Requirements
+# Requirements
 Python 3.10+
 MediaPipe
 OpenCV
 pygame
 
-#Installation
+# Installation
+
 git clone https://github.com/SelwynLatog/ROM-inator
+
 cd ROM-inator
+
 python -m venv venv
+
 venv\Scripts\activate        # Windows
+
 source venv/bin/activate     # Mac/Linux
+
 pip install mediapipe opencv-python pygame
 
-Model
+
+# Model
 Download the MediaPipe pose landmarker model and place it here:
 src/pose_landmarker.task
 
-#Run
+# Run
 python main.py
 
 Sample Outputs:
@@ -60,7 +68,7 @@ Sample Outputs:
 <img width="560" height="360" alt="image" src="https://github.com/user-attachments/assets/c061e894-f155-47e6-8bc2-093791a29218" />
 
 
-# sample of shitty crossfit butterfly pull ups purposely being flagged for swaying like a monkey
+sample of shitty crossfit butterfly pull ups purposely being flagged for swaying like a monkey
 
 <img width="1413" height="1027" alt="image" src="https://github.com/user-attachments/assets/6cb0c8be-d076-4739-8ffb-ffd5417afdc6" />
 
@@ -71,8 +79,8 @@ Sample Outputs:
 
 <img width="597" height="459" alt="image" src="https://github.com/user-attachments/assets/f8c38034-e229-4d22-b90e-4634dda2fe83" />
 
-#Roadmap (V2)
-*Mobile deployment — portrait/landscape auto-detect, touch UI
+# Roadmap (V2)
+Mobile deployment — portrait/landscape auto-detect, touch UI
 
 *Auto exercise maker — record 5 demo reps, engine sets thresholds automatically
 
@@ -84,7 +92,7 @@ Sample Outputs:
 
 *MORE EXERCISES! HELL YEAH
 
-Goal: A fitness app that understands your effort. Not a fucking shitty app with pre hardcoded workouts.
+# Goal: A fitness app that understands your effort. Not a fucking shitty app with pre hardcoded workouts.
 
 Built With
 
