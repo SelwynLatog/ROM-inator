@@ -5,6 +5,13 @@ import time
 import json
 import os
 
+from src.config import (
+    FATIGUE_MIN_REPS,
+    FATIGUE_BASELINE_REPS,
+    FATIGUE_CONC_THRESHOLD,
+    FATIGUE_COLLAPSE_THRESHOLD
+)
+
 
 class Rep:
 
@@ -46,6 +53,34 @@ class Set:
         if not self.reps:
             return 0
         return round(sum(r.total_duration for r in self.reps) / len(self.reps), 2)
+
+    @property
+    def fatigue_profile(self):
+        if self.total_reps < FATIGUE_MIN_REPS:
+            return None
+
+        baseline_reps = self.reps[1:FATIGUE_BASELINE_REPS + 1] # Rep 2- 4 for hypertrophic baseline
+        # Because gah damn waiting time affects squat and push up eccentrics
+        # just film when you actually start the movement, but even so baseline
+        # is much better at 2-4 for hypertrophic sets.
+        baseline_conc = sum(r.concentric_duration for r in baseline_reps) / len(baseline_reps)
+        baseline_ecc  = sum(r.eccentric_duration  for r in baseline_reps) / len(baseline_reps)
+
+        fatigue_onset   = None
+        collapse_onset  = None
+
+        for r in self.reps[FATIGUE_BASELINE_REPS:]:
+            if fatigue_onset is None and r.concentric_duration > baseline_conc * FATIGUE_CONC_THRESHOLD:
+                fatigue_onset = r.rep_number
+            if collapse_onset is None and r.eccentric_duration < baseline_ecc * FATIGUE_COLLAPSE_THRESHOLD:
+                collapse_onset = r.rep_number
+
+        return {
+            "baseline_conc":  round(baseline_conc, 2),
+            "baseline_ecc":   round(baseline_ecc, 2),
+            "fatigue_onset":  fatigue_onset,
+            "collapse_onset": collapse_onset
+        }
 
 
 class Session:
@@ -90,6 +125,7 @@ class Session:
                     "total_reps":       s.total_reps,
                     "duration":         s.duration,
                     "avg_rep_duration": s.avg_rep_duration,
+                    "fatigue_profile":  s.fatigue_profile,
                     "reps": [
                         {
                             "rep_number":          r.rep_number,

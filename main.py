@@ -70,10 +70,30 @@ def print_summary(session):
     for s in session.sets:
         print("")
         print(f"  Set {s.set_number}   {s.total_reps} reps   {s.duration}s   avg {s.avg_rep_duration}s per rep")
+
+        fatigue = s.fatigue_profile
+        if fatigue:
+            print(f"  Baseline   conc {fatigue['baseline_conc']}s   ecc {fatigue['baseline_ecc']}s")
+
         for r in s.reps:
-            form = "W form" if r.overall_ok else "L form"
-            chin = f"   chin {r.chin_over_bar}" if r.chin_over_bar is not None else ""
-            print(f"    Rep {r.rep_number:2}   conc {r.concentric_duration}s   ecc {r.eccentric_duration}s   {form}{chin}")
+            form     = "W form" if r.overall_ok else "L form"
+            chin     = f"   chin {r.chin_over_bar}" if r.chin_over_bar is not None else ""
+            fatigued = ""
+            collapse = ""
+            if fatigue:
+                if fatigue["fatigue_onset"] and r.rep_number >= fatigue["fatigue_onset"]:
+                    fatigued = "   FATIGUE"
+                if fatigue["collapse_onset"] and r.rep_number >= fatigue["collapse_onset"]:
+                    collapse = "   COLLAPSE"
+            print(f"    Rep {r.rep_number:2}   conc {r.concentric_duration}s   ecc {r.eccentric_duration}s   {form}{fatigued}{collapse}{chin}")
+
+        if fatigue:
+            if fatigue["fatigue_onset"]:
+                print(f"  Fatigue onset   Rep {fatigue['fatigue_onset']}")
+            if fatigue["collapse_onset"]:
+                print(f"  Collapse onset  Rep {fatigue['collapse_onset']}")
+        else:
+            print(f"  Not enough reps for fatigue profiling")
     print("")
 
 
@@ -138,9 +158,11 @@ def main():
                     session.sets[-1].total_reps >= MIN_REPS_FOR_NEW_SET
                 )
                 if current_set is None and (not session.sets or last_set_had_reps):
-                    current_set                   = session.start_set()
-                    rep_engine.bottom_time        = time.time()
-                    rep_engine.rep_start_time     = time.time()
+                    current_set = session.start_set()
+                    if exercise.direction == "ascend":
+                        rep_engine.bottom_time = time.time()
+                    else:
+                        rep_engine.top_time    = time.time()
                     rep_engine.min_angle_this_rep = 999
                 frame = overlay.draw_ready(frame)
 

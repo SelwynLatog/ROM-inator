@@ -27,6 +27,10 @@ LANDMARK_DOT_RADIUS     = 5
 LANDMARK_LINE_THICKNESS = 2
 
 # Audio
+# Set AUDIO_ENABLED to True and have custom audio feedback via
+# assets/audio/reactions and a custom background music via assets/audio/music.
+# The future mobile app will have built in audio feedback.
+# You're not missing out on anything. It's just tons of native language screaming.
 AUDIO_ENABLED      = False
 MUSIC_PATH         = "assets/audio/music/Synthwave.mp3"
 MUSIC_VOLUME       = 0.5
@@ -34,8 +38,11 @@ HALF_REP_AUDIO_DIR = "assets/audio/reactions/"
 REACTION_VOLUME    = 1.0
 
 # Video test
-VIDEO_ENABLED   = True
-VIDEO_FILE_PATH = "assets/video/pushup_good2.mp4"
+# Set VIDEO_ENABLED to True and put .mp4 files via
+# assets/videos/. Otherwise engine will automatically use 
+# your webcam as source.
+VIDEO_ENABLED   = False
+VIDEO_FILE_PATH = "assets/video/pullup_good.mp4" # eg. video of good pull up form demo
 
 # Skeleton Connections
 SKELETON_CONNECTIONS = [
@@ -102,3 +109,12 @@ PUSHUP_OK        = "GOOD! CHEST TO FLOOR!"
 PULLUP_TEMPO_BAD = "CONTROL THE NEGATIVE!"
 PULLUP_TORSO_BAD = "STOP SWINGING YOU MONKEY!"
 PULLUP_OK        = "GOOD! CHEST OVER THE BAR!"
+
+# Fatigue Profiling
+# For now, assume that user does hypertrophy sets, for the future app,
+# add threshold calibration based on training style (Strength, Hypertrophy, Endurance)
+
+FATIGUE_MIN_REPS          = 6      # minimum reps before fatigue detection runs
+FATIGUE_BASELINE_REPS     = 3      # reps used to establish baseline
+FATIGUE_CONC_THRESHOLD    = 1.5    # conc 50% slower than baseline = fatigued
+FATIGUE_COLLAPSE_THRESHOLD = 0.6   # ecc drops to 60% of baseline = collapse

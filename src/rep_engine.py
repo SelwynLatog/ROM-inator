@@ -1,7 +1,9 @@
 # src/rep_engine.py
 # Counts reps using a simple state machine.
+# Cycle-based model — full cycle ensures both ecc and conc are valid on every rep.
+
 import time
-# Changed from event based to cycle based for better pull up eccentric profiling.
+
 # Movement Phases
 PHASE_WAITING   = "WAITING"
 PHASE_AT_TOP    = "AT_TOP"
@@ -22,17 +24,17 @@ class RepEngine:
         self.commit_threshold = commit_threshold
         self.direction        = direction
 
-        # Ascending exercises start from dead hang — ready to count immediately
+        # Ascending exercises start from dead hang - ready to count immediately
         if direction == DIRECTION_ASCEND:
             self.phase = PHASE_AT_BOTTOM
         else:
             self.phase = PHASE_WAITING
 
-        self.reps             = 0
-        self.committed        = False
+        self.reps      = 0
+        self.committed = False
 
-        self.top_time                 = time.time()   # stamped when reaching top
-        self.bottom_time              = time.time()   # stamped when reaching bottom
+        self.top_time                 = time.time()
+        self.bottom_time              = time.time()
         self.last_eccentric_duration  = 0
         self.last_concentric_duration = 0
         self.min_angle_this_rep       = 999
@@ -61,8 +63,9 @@ class RepEngine:
 
         if self.phase == PHASE_WAITING:
             if self._at_top(angle):
-                self.phase     = PHASE_AT_TOP
+                self.phase    = PHASE_AT_TOP
                 self.committed = False
+                self.top_time  = time.time()    # Rep 1 eccentric starts from confirmed top
 
         elif self.phase == PHASE_AT_TOP:
             if self._past_commit(angle) and not self.committed:
@@ -81,14 +84,10 @@ class RepEngine:
                 self.phase       = PHASE_AT_BOTTOM
                 self.committed   = False
                 self.bottom_time = time.time()
+                self.last_eccentric_duration = self.bottom_time - self.top_time
 
                 if self.direction == DIRECTION_ASCEND:
-                    # Eccentric: TOP -> BOTTOM, rep counted here for ascend
-                    self.last_eccentric_duration = self.bottom_time - self.top_time
                     self.reps += 1
-                else:
-                    # Eccentric: TOP -> BOTTOM for descend, rep counted on return to top
-                    self.last_eccentric_duration = self.bottom_time - self.top_time
 
             elif self._at_top(angle) and self.committed and self.commit_frame_count > COMMIT_COOLDOWN:
                 shallow = self.min_angle_this_rep > (self.commit_threshold * 0.85)
@@ -101,14 +100,10 @@ class RepEngine:
             if self._at_top(angle):
                 self.phase    = PHASE_AT_TOP
                 self.top_time = time.time()
+                self.last_concentric_duration = self.top_time - self.bottom_time
 
                 if self.direction == DIRECTION_DESCEND:
-                    # Concentric: BOTTOM -> TOP, rep counted here for descend
-                    self.last_concentric_duration = self.top_time - self.bottom_time
                     self.reps += 1
-                else:
-                    # Concentric: BOTTOM -> TOP for ascend
-                    self.last_concentric_duration = self.top_time - self.bottom_time
 
         return {
             "reps":                     self.reps,
